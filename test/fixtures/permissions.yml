@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  priority: MyString
+  key: MyString
+  value: 1
+  securable_id: 1
+  securable_type: MyString
+  principal_id: 1
+
+two:
+  priority: MyString
+  key: MyString
+  value: 1
+  securable_id: 1
+  securable_type: MyString
+  principal_id: 1
