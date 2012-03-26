@@ -28,7 +28,9 @@
 <p>
   <b>Principal:</b>
   <%= @permission.principal_id %>
-</p>
+  </p>
+
+  <%= link_to "Securable", @permission.securable %>
 
 
 <%= link_to 'Edit', edit_permission_path(@permission) %> |

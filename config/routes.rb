@@ -1,9 +1,30 @@
 Tonermonkey::Application.routes.draw do
+  post "managers/create"
+
+  get "managers/destroy"
+
+	get 'orders/use'
+	get 'permissions/ajax_update_principals'
+  resources :orders do
+	resources :item_orders
+  end
+
+  resources :items
+
+  resources :stores do
+	resources :orders
+	resources :inventories
+  end
+
   post "sessions/create"
 
   resources :permissions
 
-  resources :groups
+  resources :groups do
+	resources :users
+  end
+
+  resources :users
 
   get "principals/index"
 
@@ -18,8 +39,6 @@ Tonermonkey::Application.routes.draw do
   get "users/update"
 
   get "sessions/new"
-
-  get "sessions/create"
 
   get "sessions/destroy"
 
@@ -72,7 +91,7 @@ Tonermonkey::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
+  root :to => 'stores#index'
 
   # See how all your routes lay out with "rake routes"
 

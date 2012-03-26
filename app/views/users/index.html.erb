@@ -1,2 +1,14 @@
-<h1>Users#index</h1>
-<p>Find me in app/views/users/index.html.erb</p>
+<h1>Listing Users</h1>
+
+<table class="table table-striped">
+	<tr>
+		<th>Name</th>
+		<th>Administrator?</th>
+	</tr>
+	<% @users.each do |user|%>
+		<tr>
+			<td><%= user.name %></td>
+			<td><%= user.admin? ? '<i class="icon-ok"></i>'.html_safe : '<i class="icon-remove"></i>'.html_safe %></td>
+		</tr>
+	<% end %>
+</table>

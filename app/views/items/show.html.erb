@@ -1,0 +1,36 @@
+<h1>Item</h1>
+<table class="table"><tr>
+		<td>
+<p>
+  <b>Name</b><br>
+  <%= @item.name %>
+</p>
+</td><td>
+<p>
+  <b>Short</b><br>
+  <%= @item.short %>
+</p>
+</td><td>
+<p>
+  <b>Barcode</b><br>
+  <%= @item.barcode %>
+</p>
+</td></tr></table>
+
+<table class="table table-striped">
+	<tr>
+		<th>Store</th>
+		<th>Count</th>
+	</tr>
+	<% @item.inventories.each do |i| %>
+		<tr>
+			<td><%= link_to i.store.name, i.store %></td>
+			<td><%= i.count %></td>
+		</tr>
+	<% end %>
+</table>
+<div class="form-actions">
+  <%= link_to 'Back', items_path, :class => 'btn'  %>
+  <%= link_to 'Edit', edit_item_path(@item), :class => 'btn' %>
+  <%= link_to 'Delete', item_path(@item), :method => 'delete', :confirm => 'Are you sure?', :class => 'btn btn-danger' %>
+</div>

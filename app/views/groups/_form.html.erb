@@ -1,3 +1,5 @@
+<% current_ids = @group.user_ids %>
+
 <%= form_for(@group) do |f| %>
   <% if @group.errors.any? %>
     <div id="error_explanation">
@@ -22,6 +24,12 @@
   <div class="field">
     <%= f.label :auth_value %><br />
     <%= f.text_field :auth_value %>
+  </div>
+  <h3>Manually Manage Members</h3>
+  <div class="field">
+  <% User.all.each do |user| %>
+	  <label><%= user.name %><%= check_box_tag 'group[user_ids][]', user.id, current_ids.include?(user.id) %></label>
+  <% end %>
   </div>
   <div class="actions">
     <%= f.submit %>

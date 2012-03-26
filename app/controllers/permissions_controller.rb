@@ -1,4 +1,5 @@
 class PermissionsController < ApplicationController
+	before_filter :check_for_admin
   # GET /permissions
   # GET /permissions.json
   def index
@@ -15,10 +16,7 @@ class PermissionsController < ApplicationController
   def show
     @permission = Permission.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @permission }
-    end
+    redirect_to @permission.securable
   end
 
   # GET /permissions/new
@@ -41,43 +39,31 @@ class PermissionsController < ApplicationController
   # POST /permissions.json
   def create
     @permission = Permission.new(params[:permission])
-
-    respond_to do |format|
-      if @permission.save
-        format.html { redirect_to @permission, notice: 'Permission was successfully created.' }
-        format.json { render json: @permission, status: :created, location: @permission }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @permission.errors, status: :unprocessable_entity }
-      end
-    end
+    @permission.principal = Principal.find(params[:principal_id])
+    redirect_to @permission.securable
+    @permission.save
   end
 
   # PUT /permissions/1
   # PUT /permissions/1.json
   def update
     @permission = Permission.find(params[:id])
+    @permission.update_attributes(params[:permission])
 
-    respond_to do |format|
-      if @permission.update_attributes(params[:permission])
-        format.html { redirect_to @permission, notice: 'Permission was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @permission.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to @permission.securable 
   end
 
   # DELETE /permissions/1
   # DELETE /permissions/1.json
   def destroy
     @permission = Permission.find(params[:id])
+    p= @permission.securable
     @permission.destroy
+    redirect_to p
+  end
 
-    respond_to do |format|
-      format.html { redirect_to permissions_url }
-      format.json { head :no_content }
-    end
+  def ajax_update_principals
+	@principals = Group.find(params[:principal_group]).all_principals
+	render :partial => 'permissions/principal_select'
   end
 end

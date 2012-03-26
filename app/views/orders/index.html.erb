@@ -1,0 +1,17 @@
+<h1>Orders</h1>
+<ul>
+  <% @orders.each do |order| %>
+    <li>
+    <%= link_to "Order #{order.id} - #{order.user.name} on #{order.user.created_at.to_s} for #{order.store.name}" , order %>
+    <ul>
+        <% order.item_orders.each do |io| %>
+	    <li>
+	    <%= nice_order io %>
+	    </li>
+	<% end %>
+    </ul>
+    </li>
+    <% end %>
+</ul>
+
+<%= link_to 'New', new_order_path, :class => 'btn btn-primary' %>

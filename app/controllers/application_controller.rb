@@ -6,4 +6,16 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find(session[:user_id]) if session[:user_id]  
 	@current_user
   end
+
+  def current_user
+	@current_user ||= User.find(session[:user_id]) if session[:user_id]
+  end
+  
+  def check_for_user
+    redirect_to '/sessions/new' unless current_user
+  end
+  
+  def check_for_admin
+    redirect_to '/home/index' unless current_user && current_user.admin?
+  end
 end

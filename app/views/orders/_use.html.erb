@@ -1,0 +1,20 @@
+<%= form_for @order, :html => { :class => 'form-horizontal' } do |f| %>
+  <fieldset>
+    <div class="control-group">
+      <div class="controls">
+	      <%= f.hidden_field :user_id, :value => current_user.id %>
+	      <h2>New Order</h2>
+	      <p>For: <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %></p>
+	      <% f.fields_for :item_orders do |f2| %>
+	      <%= f2.number_field :item_tag %></td>
+	      <%= f2.number_field :change, :size => 3 %>
+	      <%= f2.hidden_field :change_type, :value => 'use' %>
+		<% end %>
+    </div>
+</div>
+    <div class="form-actions">
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to 'Cancel', orders_path, :class => 'btn' %>
+    </div>
+  </fieldset>
+<% end %>

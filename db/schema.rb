@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120307163913) do
+ActiveRecord::Schema.define(:version => 20120307182439) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
@@ -21,11 +21,50 @@ ActiveRecord::Schema.define(:version => 20120307163913) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "inventories", :force => true do |t|
+    t.integer  "item_id"
+    t.integer  "store_id"
+    t.integer  "count"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "item_orders", :force => true do |t|
+    t.integer  "order_id"
+    t.integer  "item_id"
+    t.integer  "change"
+    t.string   "change_type"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "items", :force => true do |t|
+    t.string   "name"
+    t.string   "short"
+    t.string   "barcode"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "managers", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "store_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "memberships", :force => true do |t|
     t.integer  "group_id"
     t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "orders", :force => true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "store_id"
   end
 
   create_table "permissions", :force => true do |t|
@@ -44,6 +83,12 @@ ActiveRecord::Schema.define(:version => 20120307163913) do
     t.integer  "authorizable_id"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+  end
+
+  create_table "stores", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|

@@ -1,41 +1,39 @@
-<%= form_for(@permission) do |f| %>
-  <% if @permission.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@permission.errors.count, "error") %> prohibited this permission from being saved:</h2>
-
-      <ul>
-      <% @permission.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+<% @principals ||= Principal.all %>
+<%= form_for @permission = Permission.new, :html => {:class => 'form-horizontal'} do |f| %>
+	<%= f.hidden_field :key, :value => 'access' %>
+	<%= f.hidden_field :securable_type, :value => 'Store' %>
+	<% if @store %>
+		<%= f.hidden_field :securable_id, :value => @store.id %>
+	<% else %>
+		<%= f.select :securable_id, options_for_select(Store.all.map{|s| [s.name, s.id]}) %>
+	<% end %>
+	<table width="100%" class="table"><tr><td>
+	<p>Priority:<%= f.text_field :priority, :size => 3 %><br/>
+	Numbers come before capital letters come before small letters!</p>
+	<p>Access? <%= f.check_box :value %></p></td><td>
+	<% if @permission.principal %>
+    Applies to <%= @permission.principal.name %>
+  <% else %>
+    Applies to:
   <% end %>
-
-  <div class="field">
-    <%= f.label :priority %><br />
-    <%= f.text_field :priority %>
-  </div>
-  <div class="field">
-    <%= f.label :key %><br />
-    <%= f.text_field :key %>
-  </div>
-  <div class="field">
-    <%= f.label :value %><br />
-    <%= f.number_field :value %>
-  </div>
-  <div class="field">
-    <%= f.label :securable_id %><br />
-    <%= f.number_field :securable_id %>
-  </div>
-  <div class="field">
-    <%= f.label :securable_type %><br />
-    <%= f.text_field :securable_type %>
-  </div>
-  <div class="field">
-    <%= f.label :principal_id %><br />
-    <%= f.number_field :principal_id %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <p>
+	Group: <%= select_tag :principal_group, options_for_select(Group.all.map{|g| [g.name, g.id]}) %></p>
+	<div id="principal" style="display: inline;"><%= render :partial => 'permissions/principal_select' %></div>
+	<%= javascript_tag do %>
+	jQuery(function($) {
+  // when the #search field changes
+  $("#principal_group").change(function() {
+  // make a POST call and replace the content
+	$.ajax({
+		url: "/permissions/ajax_update_principals?principal_group="+$("#principal_group").val(),
+		dataType: "html",
+		success: function(data) {
+			$("#principal").html(data);
+		}
+	});
+  });
+});
+	<% end %>
+</td></tr></table>
+<%= f.submit :class => "btn"  %>
 <% end %>

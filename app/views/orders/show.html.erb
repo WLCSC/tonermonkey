@@ -1,0 +1,29 @@
+<h1>Order</h1>
+
+<p>
+  <b>Made By</b><br>
+  <%= @order.user.name %>
+</p>
+ 
+<p>
+  <b>Store</b><br>
+  <%= link_to @order.store.name, @order.store %>
+</p>
+<table class="table table-striped">
+	<tr>
+		<th>Item</th>
+		<th>Change</th>
+		<th>Change Type</th>
+	</tr>
+	<% @order.item_orders.each do |i| %>
+		<tr>
+			<td><%= link_to i.item.name, i.item %></td>
+			<td><%= i.change %></td>
+			<td><%= cht(i) %></td>
+		</tr>
+	<% end %>
+</table>
+
+<div class="form-actions">
+  <%= link_to 'Back', orders_path, :class => 'btn'  %>
+</div>

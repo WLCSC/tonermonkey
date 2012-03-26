@@ -1,0 +1,22 @@
+<h1>Stores</h1>
+<table class="table table-striped">
+  <thead>
+	  <tr>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @stores.each do |store| %>
+	    <tr>
+        <td><%= link_to store.name, store_path(store) %></td>
+        <td>
+		<%= link_to 'New Order', new_store_order_path(store), :class => 'btn btn-mini' %> 
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'New', new_store_path, :class => 'btn btn-primary' %>
+

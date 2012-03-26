@@ -1,0 +1,7 @@
+Hello <%= @recip.name %>, 
+
+<%= @user.name %> has submitted a new order for <%= @store.name %>:
+
+<% @order.item_orders.each do |io| %>
+<%= "#{io.change} #{io.item.name}, #{cht(io)}" %>
+<% end %>
