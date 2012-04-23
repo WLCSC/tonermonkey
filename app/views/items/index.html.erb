@@ -4,8 +4,9 @@
     <tr>
 	    <th>Name</th>
 	    <th>Short</th>
-	    <th>Count</th>
-	    <th>Actions</th>
+	    <th>Current Count</th>
+	    <th>Target Count</th>
+	    <th>Unsafe Count<th>
     </tr>
   </thead>
   <tbody>
@@ -14,6 +15,8 @@
 	      <td><%= link_to item.name, item_path(item) %></td>
 	      <td><%= item.short %></td>
 	      <td><%= item.count_all %></td>
+	      <td><%= item.target || 0 %></td>
+	      <td><%= item.unsafe || 0 %></td>
         <td>
         </td>
       </tr>

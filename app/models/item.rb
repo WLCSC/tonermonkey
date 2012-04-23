@@ -4,6 +4,16 @@ class Item < ActiveRecord::Base
 	has_many :item_orders
 	has_many :orders, :through => :item_orders
 
+	class << self
+		def unsafe_items
+			Item.all.delete_if{|i| i.count_all <= (i.unsafe ? i.unsafe : 0)}
+		end
+
+		def need_items
+			Item.all.delete_if{|i| i.count_all <= (i.target ? i.target : 0)}
+		end
+	end
+
 	def count_all
 		total = 0
 		self.inventories.each do |i|
@@ -27,5 +37,13 @@ class Item < ActiveRecord::Base
 			@r = q.first
 		end
 		@r
+	end
+
+	def safe?
+		self.count_all > (self.unsafe || 0)
+	end
+
+	def need?
+		self.count_all <= (self.target || 0)
 	end
 end

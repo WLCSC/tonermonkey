@@ -1,4 +1,9 @@
 <h1>Item</h1>
+<% if !@item.safe? %>
+	<div class="alert alert-error">This is running dangerously low!</div>
+<% elsif @item.need? %>
+	<div class="alert">You could probably use some more of this.</div>
+<% end %>
 <table class="table"><tr>
 		<td>
 <p>
@@ -15,7 +20,21 @@
   <b>Barcode</b><br>
   <%= @item.barcode %>
 </p>
-</td></tr></table>
+</td></tr>
+<tr>
+	<td>
+	<p><b>Target Count</b><br/>
+	<%= @item.target || 0 %>
+</td>
+<td>
+	<p><b>Current Count</b><br/>
+	<%= @item.count_all || 0 %>
+<td>
+	<p><b>Unsafe Count</b><br/>
+	<%= @item.unsafe || 0 %>
+</td>
+</tr>
+</table>
 
 <table class="table table-striped">
 	<tr>
