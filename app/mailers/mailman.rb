@@ -9,4 +9,11 @@ class Mailman < ActionMailer::Base
 	@recip = recip
 	mail(:to => @recip.email, :subject => "[TonerMonkey] Order ##{order.id}", :from => 'support@wl.k12.in.us')
   end
+
+  def unsafe_email order, item, recip
+	@order = order
+	@item = item
+	@recip = recip
+	mail(:to => @recip.email, :subject => "[TonerMonkey] Running Dangerously Low on #{item.name}!", :from => 'support.wl.k12.in.us')
+  end
 end

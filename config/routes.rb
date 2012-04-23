@@ -2,6 +2,7 @@ Tonermonkey::Application.routes.draw do
   post "managers/create"
 
   get "managers/destroy"
+  get 'items/order_sheet'
 
 	get 'orders/use'
 	get 'permissions/ajax_update_principals'

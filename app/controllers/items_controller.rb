@@ -81,4 +81,8 @@ class ItemsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def order_sheet
+	
+  end
 end
