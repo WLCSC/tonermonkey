@@ -7,6 +7,10 @@ class ItemOrder < ActiveRecord::Base
 	after_save :update_store
 	before_update :remove_from_store
 	before_save :fix_change
+	validates_each :item_tag do |record, attr, value|
+		record.errors.add(attr, "#{value} doesn't exist") unless (Item.find_tag(value))
+	end
+
 
 	def fix_change
 		self.change *= -1 if (['return', 'use', 'stxfr'].include?(self.change_type) && self.change >= 0) || (['new', 'replace', 'rtxfr'].include?(self.change_type) && self.change <= 0)

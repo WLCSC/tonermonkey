@@ -11,4 +11,21 @@ class Item < ActiveRecord::Base
 		end
 		total
 	end
+
+	def Item.find_tag i
+		@r = nil
+		q = Item.where(:barcode => i)
+		if q.length >= 1
+			@r = q.first
+		end
+		q = Item.where(:short => i)
+		if q.length >= 1
+			@r = q.first
+		end
+		q = Item.where(:name => i)
+		if q.length >= 1
+			@r = q.first
+		end
+		@r
+	end
 end

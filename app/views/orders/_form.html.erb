@@ -1,32 +1,42 @@
 <% tags = []
 Item.all.each do |i|
-		tags << i.name.to_s if i.name != nil
-		tags << i.short.to_s if i.short != nil
-		tags << i.barcode.to_s if i.barcode != nil
+	tags << i.name.to_s if i.name != nil
+	tags << i.short.to_s if i.short != nil
+	tags << i.barcode.to_s if i.barcode != nil
 end
  %>
 
-<%= nested_form_for @order, :html => { :class => 'form-horizontal' } do |f| %>
-  <fieldset>
-    <div class="control-group">
-      <div class="controls">
-	      <%= f.hidden_field :user_id, :value => current_user.id %>
-	      <h2>New Order</h2>
-	      <p>For: <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %></p>
-      <%= f.fields_for :item_orders do |f2| %>
-		      <%= f2.number_field(:item_tag, :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10 ) %></td>
-	      <%= f2.number_field :change, :size => 3 %>
-		      <%= f2.select :change_type, {"Recieve New" => 'new', 'Recieve Replacement' => 'replace', 'Recieve Transfer' => 'rtxfr', 'Use' => 'use', 'Return' => 'return', 'Send Transfer' => 'stxfr'}.to_a %>
+ <%= nested_form_for @order, :html => { :class => 'form-horizontal' } do |f| %>
+	 <fieldset>
+		 <div class="control-group">
+			 <% if @order.errors.any? %>
+				 <div id="error_explanation">
+					 <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being submitted:</h2>
+					 <ul>
+						 <% @order.errors.full_messages.each do |msg| %>
+							 <li><%= msg %></li>
+						 <% end %>
+					 </ul>
+				 </div>
+			 <% end %>
+			 <div class="controls">
+				 <%= f.hidden_field :user_id, :value => current_user.id %>
+				 <h2>New Order</h2>
+				 <p>For: <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %></p>
+				 <%= f.fields_for :item_orders do |f2| %>
+					 <%= f2.number_field(:item_tag, :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10 ) %></td>
+				 <%= f2.number_field :change, :size => 3 %>
+				 <%= f2.select :change_type, {"Recieve New" => 'new', 'Recieve Replacement' => 'replace', 'Recieve Transfer' => 'rtxfr', 'Use' => 'use', 'Return' => 'return', 'Send Transfer' => 'stxfr'}.to_a %>
 
-		      <%= f2.link_to_remove "Cancel", :class => 'btn-danger btn-mini' %>
-      <% end %>
-      <%= f.link_to_add "Add a Line", :item_orders, :class => 'btn btn-mini' %>
+				 <%= f2.link_to_remove "Cancel", :class => 'btn-danger btn-mini' %>
+			 <% end %>
+			 <%= f.link_to_add "Add a Line", :item_orders, :class => 'btn btn-mini' %>
 
-    </div>
-</div>
-    <div class="form-actions">
-      <%= f.submit nil, :class => 'btn btn-primary' %>
-      <%= link_to 'Cancel', orders_path, :class => 'btn' %>
-    </div>
-  </fieldset>
-<% end %>
+		 </div>
+	 </div>
+	 <div class="form-actions">
+		 <%= f.submit nil, :class => 'btn btn-primary' %>
+		 <%= link_to 'Cancel', orders_path, :class => 'btn' %>
+	 </div>
+ </fieldset>
+ <% end %>
