@@ -111,7 +111,7 @@ class OrdersController < ApplicationController
 	def quick
 		if(params[:username])
 			user = User.where(:username => params[:username]).first
-			store = Storw.where(:name => params[:store]).first
+			store = Store.where(:name => params[:store]).first
 		else
 			user = User.find(params[:user_id])
 			store = Store.find params[:store_id]
