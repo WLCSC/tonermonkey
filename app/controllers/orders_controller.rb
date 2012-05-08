@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-	before_filter :check_for_user
+	before_filter :check_for_user, :except => [:quick]
 	# GET /orders
 	# GET /orders.json
 	def index
@@ -109,13 +109,19 @@ class OrdersController < ApplicationController
 	end
 
 	def quick
-
-		user = User.find params[:user_id]
-		store = Store.find params[:store_id]
-
-		order = Order.create!(:user_id => user.id, :store_id => store.id)
-
-		ItemOrder.create!(:item_tag => params[:item_tag],  :order_id => order.id, :change => -1, :change_type => 'use')
-		redirect_to root_path, :info => "Used 1 #{params[:item_tag]}!"
+		if(params[:username])
+			user = User.where(:username => params[:username]).first
+			store = Storw.where(:name => params[:store]).first
+		else
+			user = User.find(params[:user_id])
+			store = Store.find params[:store_id]
+		end
+		
+		i = Item.find_tag params[:item_tag]
+		if i
+			order = Order.create!(:user_id => user.id, :store_id => store.id)
+			ItemOrder.create!(:item_tag => params[:item_tag],  :order_id => order.id, :change => -1, :change_type => 'use')
+		end
+		render :nothing
 	end
 end

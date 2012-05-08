@@ -10,6 +10,7 @@ Tonermonkey::Application.routes.draw do
   resources :orders do
 	  collection do
 		get 'transfer'
+		get 'quick'
 	  end
 	resources :item_orders
   end

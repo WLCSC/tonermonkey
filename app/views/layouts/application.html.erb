@@ -81,7 +81,6 @@ end
 		    <li class="nav-header">Quick Use</li>
 		    <li><%= form_tag '/orders/quick', :class=> 'form-vertical' do %>
 			    <%= hidden_field_tag :user_id, current_user.id %>
-			    <%= hidden_field_tag :change_type, 'use' %>
 			    <%= select_tag :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %>
 			    <%= number_field_tag(:item_tag, '', :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10, :autocomplete => false ) %>
 			    <%= submit_tag "Use", :class=>'btn btn-mini' %>
