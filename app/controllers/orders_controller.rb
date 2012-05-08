@@ -122,6 +122,10 @@ class OrdersController < ApplicationController
 			order = Order.create!(:user_id => user.id, :store_id => store.id)
 			ItemOrder.create!(:item_tag => params[:item_tag],  :order_id => order.id, :change => -1, :change_type => 'use')
 		end
-		render :nothing
+		if(params[:username])
+			render :text => 'OK', :status => 200
+		else
+			redirect_to store
+		end
 	end
 end
