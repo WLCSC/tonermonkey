@@ -42,17 +42,29 @@ class OrdersController < ApplicationController
 	# POST /orders.json
 	def create
 		@order = Order.new(params[:order])
+		@orders = {}
+		@order.item_orders.each do |io|
+			if io.store_id != @order.store_id
+				unless @orders[io.store_id]
+					@orders[io.store_id] = Order.new(:user_id => @order.user_id, :store_id => io.store_id)
+				end
+				io.order = @orders[io.store_id]
+				io.save
+			end
+		end
 
 		respond_to do |format|
-			if @order.save
-				@order.store.managing_users.each do |u|
-					Mailman.order_email(@order, current_user, u).deliver
-				end
-				@order.store.items.each do |i|
-					unless item.safe?
-						User.where(:administrator => true).each do |u|
-							Mailman.unsafe_email(@order, current_user, u).deliver
-						end			
+			if @orders.each{|i,x| x.save}
+				@orders.each do |i,order|
+					order.store.managing_users.each do |u|
+						Mailman.order_email(order, current_user, u).deliver
+					end
+					order.store.items.each do |item|
+						unless item.safe?
+							User.where(:administrator => true).each do |u|
+								Mailman.unsafe_email(order,item, u).deliver
+							end			
+						end
 					end
 				end
 				format.html { redirect_to @order, notice: 'Order was successfully created.' }
@@ -94,5 +106,16 @@ class OrdersController < ApplicationController
 
 	def use
 		@order = Order.new
+	end
+
+	def quick
+
+		user = User.find params[:user_id]
+		store = Store.find params[:store_id]
+
+		order = Order.create!(:user_id => user.id, :store_id => store.id)
+
+		ItemOrder.create!(:item_tag => params[:item_tag],  :order_id => order.id, :change => -1, :change_type => 'use')
+		redirect_to root_path, :info => "Used 1 #{params[:item_tag]}!"
 	end
 end

@@ -24,9 +24,10 @@ end
 				 <h2>New Order</h2>
 				 <p>For: <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %></p>
 				 <%= f.fields_for :item_orders do |f2| %>
-					 <%= f2.number_field(:item_tag, :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10 ) %></td>
-				 <%= f2.number_field :change, :size => 3 %>
+					 <%= f2.number_field(:item_tag, :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10, :placeholder => "Item" ) %></td>
+				 <%= f2.number_field :change, :size => 3, :placeholder => "#" %>
 				 <%= f2.select :change_type, {"Recieve New" => 'new', 'Recieve Replacement' => 'replace', 'Recieve Transfer' => 'rtxfr', 'Use' => 'use', 'Return' => 'return', 'Send Transfer' => 'stxfr'}.to_a %>
+				 <%= f2.select :store_id, options_for_select(Store.all.map{|s| [s.name, s.id]}, params[:store_id]) %>
 
 				 <%= f2.link_to_remove "Cancel", :class => 'btn-danger btn-mini' %>
 			 <% end %>

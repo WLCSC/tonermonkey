@@ -1,7 +1,7 @@
 class ItemOrder < ActiveRecord::Base
 	belongs_to :order
 	belongs_to :item
-	attr_accessor :item_tag
+	attr_accessor :item_tag, :store_id
 	has_one :store, :through => :order
 	before_create :find_tag
 	after_save :update_store

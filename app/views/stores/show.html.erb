@@ -1,97 +1,108 @@
 <h1>Store</h1>
 
 <p>
-  <b>Name</b><br>
-  <%= @store.name %>
+<b>Name</b><br>
+<%= @store.name %>
 </p>
 
-<a onClick="$('#invbox').collapse('toggle')"><h2>Inventory</h2></a>
-<div id="invbox" class="well">
+<ul class="nav nav-tabs">
+<li class="active"><a href="#inv" data-toggle="tab">Inventory</a></li>
+<li><a href="#orders" data-toggle="tab">Recent Orders</a></li>
+<% if current_user.admin? %>
+	<li><a href="#perms" data-toggle="tab">Permissions</a></li>
+	<li><a href="#managers" data-toggle="tab">Managers</a></li>
+<% end %>
+</ul>
+
+<div class="tab-content">
+<div class="tab-pane active well" id="inv">
 <table class="table table-striped">
+<tr>
+<th>Item</th>
+<th>Short</th>
+<th>Count</th>
+</tr>
+<% @store.inventories.each do |i| %>
 	<tr>
-		<th>Item</th>
-		<th>Count</th>
+	<td><%= link_to i.item.name, i.item %></td>
+	<td><%= i.item.short %></td>
+	<td><%= i.count %></td>
 	</tr>
-	<% @store.inventories.each do |i| %>
-		<tr>
-			<td><%= link_to i.item.name, i.item %></td>
-			<td><%= i.count %></td>
-		</tr>
-	<% end %>
+<% end %>
 </table>
 
 <div class="form-actions">
 <%= link_to 'New Order', new_store_order_path(@store), :class => 'btn btn-primary' %>
-<% if current_user.admin? %><%= link_to 'Delete Store', store_path(@store), :method => 'delete', :confirm => 'Are you sure?', :class => 'btn btn-danger' %><% end %>
+<% if current_user.admin? %>
+	<%= link_to 'Delete Store', store_path(@store), :method => 'delete', :confirm => 'Are you sure?', :class => 'btn btn-danger' %>
+<% end %>
 </div>
 </div>
 
-<a onClick="$('#orderbox').collapse('toggle')"><h2>Recent Orders</h2></a>
-<div class="well" id="orderbox">
+<div class="tab-pane well" id="orders">
 <ul>
-  <% @store.orders.last(10).each do |order| %>
-    <li>
-    <%= link_to "Order #{order.id} - #{order.user.name} on #{order.user.created_at.to_s} for #{order.store.name}" , order %>
-    <ul>
-        <% order.item_orders.each do |io| %>
-	    <li>
-	    <%= nice_order io %>
-	    </li>
+<% @store.orders.last(10).each do |order| %>
+	<li>
+	<%= link_to "Order #{order.id} - #{order.user.name} on #{order.user.created_at.to_s} for #{order.store.name}" , order %>
+	<ul>
+	<% order.item_orders.each do |io| %>
+		<li>
+		<%= nice_order io %>
+		</li>
 	<% end %>
-    </ul>
-    </li>
-    <% end %>
+	</ul>
+	</li>
+<% end %>
 </ul>
 </div>
 
 <% if current_user.admin? %>	
-	<a onClick="$('#permbox').collapse('toggle')"><h2>Permissions</h2></a>
-	<div class="well collapse" id="permbox">
+	<div class="tab-pane well" id="perms">
 	<table class="table table-striped">
+	<tr>
+	<th>You?</th>
+	<th>Principal</th>
+	<th>Priority</th>
+	<th>Access?</th>
+	<th>Actions<th>
+	</tr>
+
+	<% @store.permissions.order('priority').each do |p| %>
 		<tr>
-			<th>You?</th>
-			<th>Principal</th>
-			<th>Priority</th>
-			<th>Access?</th>
-			<th>Actions<th>
+		<td><%= p.authorizes?(current_user) ? '<i class="icon-ok"></i>'.html_safe : '<i class="icon-remove"></i>'.html_safe %></td>
+		<td><%= p.principal ? p.principal.nice_name : 'nil' %></td>
+		<td><%= p.priority %></td>
+		<td><%= p.value == 1 ? '<i class="icon-ok"></i>'.html_safe : '<i class="icon-remove"></i>'.html_safe %>
+		<td><%= link_to "Remove", permission_path(p), :method => 'delete', :class => 'btn btn-mini btn-danger' %></td>
 		</tr>
+	<% end %>
 
-		<% @store.permissions.order('priority').each do |p| %>
-			<tr>
-				<td><%= p.authorizes?(current_user) ? '<i class="icon-ok"></i>'.html_safe : '<i class="icon-remove"></i>'.html_safe %></td>
-				<td><%= p.principal ? p.principal.nice_name : 'nil' %></td>
-				<td><%= p.priority %></td>
-				<td><%= p.value == 1 ? '<i class="icon-ok"></i>'.html_safe : '<i class="icon-remove"></i>'.html_safe %>
-					<td><%= link_to "Remove", permission_path(p), :method => 'delete', :class => 'btn btn-mini btn-danger' %></td>
-			</tr>
-		<% end %>
-
-</table>
-<%= render :partial => 'permissions/form' %>
-</div>
+	</table>
+	<%= render :partial => 'permissions/form' %>
+	</div>
 <% end %>
 
 <% if current_user.admin? || @store.managing_users.include?(current_user) %>
-	<a onClick="$('#manbox').collapse('toggle')"><h2>Managers</h2></a>
-	<div class="well collapse" id="manbox">
-		<table class="table table-striped" %>
+	<div class="tab-pane well" id="managers">
+	<table class="table table-striped" %>
+		<tr>
+			<th>User</th>
+			<th>Actions</th>
+		</tr>
+		<% @store.managers.each do |manager| %>
 			<tr>
-				<th>User</th>
-				<th>Actions</th>
-			</tr>
-			<% @store.managers.each do |manager| %>
-				<tr>
-					<td><%= link_to manager.user.name, manager.user %></td>
-					<td><%= link_to "Remove", "/managers/destroy?id=#{manager.id}", :class => "btn btn-mini btn-danger" %>
+				<td><%= link_to manager.user.name, manager.user %></td>
+				<td><%= link_to "Remove", "/managers/destroy?id=#{manager.id}", :class => "btn btn-mini btn-danger" %>
 				</tr>
 			<% end %>
 		</table>
 		<% if current_user.admin? %>
-		<%= form_tag '/managers/create' do %>
-			<%= hidden_field_tag :store_id, @store.id %>
-			<%= select_tag :user_id, options_from_collection_for_select(User.all, :id, :name)%>
-			<%= submit_tag "Add Manager", :class => 'btn'%>
+			<%= form_tag '/managers/create' do %>
+				<%= hidden_field_tag :store_id, @store.id %>
+				<%= select_tag :user_id, options_from_collection_for_select(User.all, :id, :name)%>
+				<%= submit_tag "Add Manager", :class => 'btn'%>
+			<% end %>
 		<% end %>
-	<% end %>
 	</div>
 <% end %>
+</div>

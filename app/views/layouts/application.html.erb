@@ -51,7 +51,13 @@
         </div>
       </div>
     </div>
-
+<% tags = []
+Item.all.each do |i|
+	tags << i.name.to_s if i.name != nil
+	tags << i.short.to_s if i.short != nil
+	tags << i.barcode.to_s if i.barcode != nil
+end
+%>
     <div class="container">
 	    <% flash.each do |type, message| %>
 		    <div data-alert="alert fade-in" class="alert alert-<%= twitterized_type(type)%>">
@@ -73,12 +79,12 @@
 			<li class="nav-header">Hi, <%= current_user.name %>!</li>
                     <li><%= link_to "Log out", "/sessions/destroy"  %></li>
 		    <li class="nav-header">Quick Use</li>
-		    <li><%= nested_form_for Order.new, :class=> 'form-vertical' do |f| %>
-			    <%= f.hidden_field :user_id, :value => current_user.id %>
-			    <%= f.hidden_field :change_type, :value => 'use' %>
-			    <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %>
-			    <%= item_tag_field f %>
-			    <%= f.submit "Use", :class=>'btn btn-mini' %>
+		    <li><%= form_tag '/orders/quick', :class=> 'form-vertical' do %>
+			    <%= hidden_field_tag :user_id, current_user.id %>
+			    <%= hidden_field_tag :change_type, 'use' %>
+			    <%= select_tag :store_id, options_from_collection_for_select(Store.all, :id, :name, params[:store_id]) %>
+			    <%= number_field_tag(:item_tag, '', :"data-provide" => 'typeahead', :"data-items" => tags.length, :"data-source" => tags.to_s, :size => 10, :autocomplete => false ) %>
+			    <%= submit_tag "Use", :class=>'btn btn-mini' %>
 		    <% end %></li>
 	        </ul>
                       <% else %>

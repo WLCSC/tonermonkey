@@ -3,10 +3,14 @@ Tonermonkey::Application.routes.draw do
 
   get "managers/destroy"
   get 'items/order_sheet'
+  post 'orders/quick'
 
 	get 'orders/use'
 	get 'permissions/ajax_update_principals'
   resources :orders do
+	  collection do
+		get 'transfer'
+	  end
 	resources :item_orders
   end
 
